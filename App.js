@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
+import { NativeModules } from 'react-native';
 
 // You can import from local files
 import AssetExample from './components/AssetExample';
@@ -57,16 +58,22 @@ export default function App() {
     await e(`
       INSERT INTO note (content, file)
       values(?, ?)
-    `, ["test", [116,
-      101,
-      115,
-      116,]]);
+    `, ["test",
+      f
+      // [116,
+      //   101,
+      //   115,
+      //   116,]
+    ]);
     await e(`
     select * from note 
     `)
   }
   React.useEffect(() => {
-    load();
+    console.warn("native moduole: :", NativeModules);
+    console.warn("Object.key: :", Object.keys(NativeModules));
+
+    // load();
   }, []);
   return (
     <View style={styles.container}>
