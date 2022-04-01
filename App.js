@@ -20,15 +20,15 @@ export default function App() {
     console.log('db:', db);
     async function e(sql, params) {
       console.warn("to sql:", sql, params);
-      await new Promise((r, j) => {
+      return new Promise((r, j) => {
         console.warn("fn:", db.transaction);
         db.transaction((tx) => {
           tx.executeSql(
             sql,
             params,
             (_, { rows: { _array } }) => {
-              console.warn("result:", _array);
-              r(true);
+              console.warn("resultxxx:", _array);
+              r(_array);
             },
             (_, e) => {
               console.warn('err:', e);
@@ -55,25 +55,33 @@ export default function App() {
     console.warn("Buffer:", Buffer);
     console.warn("f:", f);
     console.warn("f.prototype:", f.prototype);
+    const fBase64 = f.toString("base64");
+    console.warn("fBase64:", fBase64);
+
     await e(`
       INSERT INTO note (content, file)
       values(?, ?)
     `, ["test",
-      f
+      // f
       // [116,
       //   101,
       //   115,
       //   116,]
+      fBase64
     ]);
-    await e(`
+    const rr = await e(`
     select * from note 
     `)
+    rr.forEach(r => {
+      r.file = Buffer.from(r.file, "base64");
+    });
+    console.warn("rr:", rr);
   }
   React.useEffect(() => {
-    console.warn("native moduole: :", NativeModules);
-    console.warn("Object.key: :", Object.keys(NativeModules));
+    // console.warn("native moduole: :", NativeModules);
+    // console.warn("Object.key: :", Object.keys(NativeModules));
 
-    // load();
+    load();
   }, []);
   return (
     <View style={styles.container}>
